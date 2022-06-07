@@ -23,10 +23,11 @@ export class GetProfileController {
   @Post("/register/:did")
   @Summary("Register the given DID as a Disco user")
   async registerDid(@PathParams("did") did: string): Promise<boolean> {
+    // Only register if did does not exist
     console.log("@TODO: Implement me using this.DidService");
     const result = this.DidService.registerDid(did);
 
-    return true;
+    return result;
   }
 
   @Get("/getProfileViaDid/:did")
@@ -40,13 +41,23 @@ export class GetProfileController {
   @Get("/getAllProfiles")
   @Summary("Retrive the profiles of all Disco users")
   async getAllProfiles(): Promise<Profile[]> {
-    const result = this.DidService.getAllDids();
+    const result = await this.DidService.getAllDids();
 
-    console.log("@TODO: Using stub implementation with hard-coded profile fetch. Implement me!");
+    console.log(result);
 
-    const profile = await getProfileFromCeramic("did:3:kjzl6cwe1jw148uyox3goiyrwwe3aab8vatm3apxqisd351ww0dj6v5e3f61e8b");
+    // Get profiles for each result
+    let promises = result.map(did => getProfileFromCeramic(did.did))
 
-    return [profile!];
+    // Execute Async
+    const promiseResults = await Promise.allSettled(promises);
+    let profiles = promiseResults.filter(p => p.status === 'fulfilled').map(p => {
+      if(p.status === 'fulfilled') {
+        return <Profile>p.value;
+      }
+    });
+
+    // Filter out the undefined for type friendly"ness"
+    return <Profile[]>profiles.filter(p => p != undefined);
   }
 
 }
