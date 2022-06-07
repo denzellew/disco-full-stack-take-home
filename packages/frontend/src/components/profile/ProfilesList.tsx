@@ -8,14 +8,14 @@ import { Profile } from "../../types";
 
 export const ProfilesList: React.FC = (props) => {
   const [loading, setLoading] = React.useState(true);
-  const [profiles, setProfiles] = React.useState<Profile[]>([]);
+  const [dids, setDids] = React.useState<string[]>([]);
 
   const api = React.useMemo(() => new ApiService(), []);
 
   React.useEffect(() => {
     async function fetchProfiles() {
-      const dtoProfiles = await api.getAllProfiles();
-      setProfiles(dtoProfiles);
+      const dtoDids = await api.getAllDids();
+      setDids(dtoDids);
       setLoading(false);
     };
 
@@ -36,5 +36,5 @@ export const ProfilesList: React.FC = (props) => {
     );
   }
 
-  return profiles.map(p => (<ProfileView did="" profile={p}></ProfileView>));
+  return dids.map(did => (<ProfileLoader did={did}></ProfileLoader>));
 };
