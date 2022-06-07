@@ -20,11 +20,16 @@ export class DidService {
   }
 
   async registerDid(did: string): Promise<boolean> {
-    const newDid = new Did();
-    newDid.did = did;
-    console.log("Saved new DID:", newDid);
-    await this.connection.manager.save(newDid);
-    return true;
+    // Check if did exists first
+    let didExists = await this.DidRepository.findDidExists(did) 
+    if(!didExists) {
+      const newDid = new Did();
+      newDid.did = did;
+      console.log("Saved new DID:", newDid);
+      await this.DidRepository.save(newDid);
+      return true;
+    }
+    return false;
   }
   
   async getAllDids(): Promise<Did[]> {

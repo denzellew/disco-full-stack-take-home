@@ -23,7 +23,7 @@ export class GetProfileController {
   @Post("/register/:did")
   @Summary("Register the given DID as a Disco user")
   async registerDid(@PathParams("did") did: string): Promise<boolean> {
-    // Only register if did does not exist
+    // Nothing really to change here. Do you wish to save profile data as well?
     console.log("@TODO: Implement me using this.DidService");
     const result = this.DidService.registerDid(did);
 

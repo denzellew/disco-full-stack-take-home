@@ -10,4 +10,8 @@ export class DidRepository extends Repository<Did> {
   async findAllDids() {
     return await this.find();
   }
+
+  async findDidExists(did: string) {
+    return await this.count({where: {did: did}}) > 0;
+  }
 }
