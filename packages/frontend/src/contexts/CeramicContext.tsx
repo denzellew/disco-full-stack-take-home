@@ -96,6 +96,14 @@ export const CeramicProvider: React.FC = (props) => {
       console.log("[CeramicContext] Loaded current user data for DID", ceramic.did.id, userDataDoc.content);
       setUserData(userDataDoc.content || {});
       setIsLoadingUserData(false);
+
+      // Added provision for account change
+      window.ethereum.on('accountsChanged', () => {
+        setIsConnected(false);
+        setEthAddress("");
+        setUserDid("");
+        setUserData({});
+      });
     };
   }, [ceramic, isConnected]);
 
